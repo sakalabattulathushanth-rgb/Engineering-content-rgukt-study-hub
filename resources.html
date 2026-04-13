@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RGUKT Library</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        :root {
+            --primary: #4e73df;
+            --surface: #ffffff;
+            --bg: #f4f7fe;
+            --text: #1e293b;
+        }
+
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body { margin: 0; background: var(--bg); display: flex; justify-content: center; color: var(--text); }
+
+        .app-shell {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background: var(--bg);
+            padding-bottom: 40px;
+        }
+
+        /* Modern Header */
+        .header {
+            background: linear-gradient(135deg, #4e73df 0%, #22c55e 100%);
+            padding: 40px 25px 30px;
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
+            color: white;
+            box-shadow: 0 10px 20px rgba(78, 115, 223, 0.2);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px; margin-bottom: 20px;
+            cursor: pointer; font-size: 20px;
+        }
+
+        .header h2 { margin: 0; font-size: 22px; font-weight: 700; }
+        .header p { margin: 5px 0 0; font-size: 13px; opacity: 0.9; }
+
+        /* Subject List Container */
+        .subject-container { padding: 25px 20px; }
+
+        .subject-wrapper {
+            margin-bottom: 16px;
+            border-radius: 20px;
+            background: var(--surface);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: 0.3s all;
+            border: 1px solid #eef2f6;
+            overflow: hidden; /* Important for the slide effect */
+        }
+
+        /* The Subject Button */
+        .subject-btn {
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .subject-btn h3 { margin: 0; font-size: 15px; font-weight: 600; color: var(--text); }
+        
+        .indicator {
+            width: 28px; height: 28px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; color: var(--primary);
+            transition: 0.3s;
+        }
+
+        /* Content Area (Hidden by default) */
+        .content-drawer {
+            display: none; /* Changed from max-height for stability */
+            background: #fafbff;
+            border-top: 1px solid #f1f5f9;
+            padding: 10px 0;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .res-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: var(--text);
+            transition: 0.2s;
+        }
+
+        .res-item:active { background: #eef2ff; }
+
+        .res-icon {
+            width: 40px; height: 40px;
+            background: white;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            margin-right: 15px; font-size: 18px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .res-text b { display: block; font-size: 13px; margin-bottom: 2px; }
+        .res-text span { font-size: 11px; color: #64748b; }
+
+        /* State: Open */
+        .subject-wrapper.open {
+            border-color: var(--primary);
+            box-shadow: 0 10px 15px -3px rgba(78, 115, 223, 0.1);
+        }
+
+        .subject-wrapper.open .indicator {
+            transform: rotate(180deg);
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="header">
+        <div class="back-btn" onclick="history.back()">←</div>
+        <h2 id="b-title">Branch Content</h2>
+        <p id="s-title">Semester View</p>
+    </div>
+
+    <div class="subject-container">
+        <div class="subject-wrapper">
+            <div class="subject-btn" onclick="toggleSubject(this)">
+                <h3>Mathematics - II</h3>
+                <div class="indicator">▼</div>
+            </div>
+            <div class="content-drawer">
+                <a href="#" class="res-item">
+                    <div class="res-icon">📝</div>
+                    <div class="res-text"><b>Detailed Notes</b><span>PDF • Unit 1-5</span></div>
+                </a>
+                <a href="#" class="res-item">
+                    <div class="res-icon">📄</div>
+                    <div class="res-text"><b>PYQ Papers</b><span>Previous Year Questions</span></div>
+                </a>
+            </div>
+        </div>
+
+        <div class="subject-wrapper">
+            <div class="subject-btn" onclick="toggleSubject(this)">
+                <h3>Data Structures</h3>
+                <div class="indicator">▼</div>
+            </div>
+            <div class="content-drawer">
+                <a href="#" class="res-item">
+                    <div class="res-icon">📂</div>
+                    <div class="res-text"><b>Lab Manual</b><span>Verified Code Snippets</span></div>
+                </a>
+                <a href="#" class="res-item">
+                    <div class="res-icon">🎥</div>
+                    <div class="res-text"><b>Video Tutorials</b><span>YouTube Playlist</span></div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Get URL data to show Branch/Sem
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        document.getElementById('b-title').innerText = urlParams.get('branch') || "Course";
+        document.getElementById('s-title').innerText = urlParams.get('sem') || "Semester";
+    };
+
+    // 2. Toggle Logic (Fixed)
+    function toggleSubject(element) {
+        const wrapper = element.parentElement;
+        const drawer = wrapper.querySelector('.content-drawer');
+        
+        // Close others
+        document.querySelectorAll('.subject-wrapper').forEach(item => {
+            if(item !== wrapper) {
+                item.classList.remove('open');
+                item.querySelector('.content-drawer').style.display = 'none';
+            }
+        });
+
+        // Toggle current
+        if (wrapper.classList.contains('open')) {
+            wrapper.classList.remove('open');
+            drawer.style.display = 'none';
+        } else {
+            wrapper.classList.add('open');
+            drawer.style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>

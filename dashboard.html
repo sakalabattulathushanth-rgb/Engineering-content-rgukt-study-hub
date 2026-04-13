@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RGUKT Hub | Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
+
+        :root {
+            --primary: #4e73df;
+            --glass: rgba(255, 255, 255, 0.85);
+            --border: rgba(255, 255, 255, 0.4);
+        }
+
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            /* Modern Mesh Gradient Background */
+            background: radial-gradient(at top left, #667eea, transparent),
+                        radial-gradient(at top right, #764ba2, transparent),
+                        radial-gradient(at bottom left, #4e73df, transparent);
+            background-color: #1a1a2e;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            min-height: 100vh;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            color: white;
+            animation: fadeIn 0.8s ease-out;
+            position: relative;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Header Section */
+        .header {
+            padding: 45px 25px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .welcome-msg h2 { margin: 0; font-size: 24px; font-weight: 800; }
+        .welcome-msg p { margin: 2px 0 0; font-size: 13px; opacity: 0.7; }
+
+        .logout-pill {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Categories */
+        .main-content { padding: 0 25px 40px; }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: var(--glass);
+            border-radius: 24px;
+            padding: 22px 10px;
+            text-align: center;
+            border: 1px solid var(--border);
+            color: #333;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            transform: scale(0.8);
+            animation: cardPop 0.5s forwards;
+        }
+
+        @keyframes cardPop { to { opacity: 1; transform: scale(1); } }
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+
+        .card:active { transform: scale(0.94); }
+        .card .icon { font-size: 30px; margin-bottom: 8px; display: block; }
+        .card span { font-size: 12px; font-weight: 700; color: var(--primary); text-transform: uppercase; }
+
+        /* Selection Panel */
+        .selection-group {
+            background: var(--glass);
+            padding: 28px;
+            border-radius: 30px;
+            margin-top: 25px;
+            color: #333;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            opacity: 0;
+            animation: slideUp 0.6s forwards 0.5s;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        label { display: block; font-size: 10px; font-weight: 800; color: #999; margin-bottom: 8px; letter-spacing: 1.5px; }
+        
+        select {
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            border: 2px solid #f0f2f5;
+            margin-bottom: 22px;
+            font-size: 15px;
+            font-weight: 600;
+            outline: none;
+            background: #f9fbff;
+            color: #444;
+            cursor: pointer;
+        }
+
+        .fetch-btn {
+            background: linear-gradient(135deg, #4e73df 0%, #22c55e 100%);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(78, 115, 223, 0.3);
+            transition: 0.3s;
+        }
+
+        .fetch-btn:active { transform: scale(0.97); }
+
+        /* Loading Overlay */
+        #loader {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center; align-items: center;
+            flex-direction: column;
+        }
+        .spinner { width: 40px; height: 40px; border: 4px solid #fff; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div id="loader">
+    <div class="spinner"></div>
+    <p style="margin-top: 15px; font-weight: 600;">Fetching Resources...</p>
+</div>
+
+<div class="app-shell">
+    <div class="header">
+        <div class="welcome-msg">
+            <h2 id="greet">Hello,</h2>
+            <p id="user-name">RGUKTian</p>
+        </div>
+        <div class="logout-pill" onclick="logout()">LOGOUT</div>
+    </div>
+
+    <div class="main-content">
+        <div class="grid">
+            <div class="card"><span class="icon">📝</span><span>Notes</span></div>
+            <div class="card"><span class="icon">📂</span><span>Papers</span></div>
+            <div class="card"><span class="icon">📖</span><span>Books</span></div>
+            <div class="card"><span class="icon">🎬</span><span>Videos</span></div>
+        </div>
+
+        <div class="selection-group">
+            <label>CHOOSE BRANCH</label>
+            <select id="branch">
+                <option value="Computer Science">Computer Science</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Mechanical">Mechanical</option>
+                <option value="Civil">Civil</option>
+                <option value="Chemical">Chemical</option>
+            </select>
+
+            <label>CHOOSE SEMESTER</label>
+            <select id="sem">
+                <option value="E1 Semester 1">E1 Semester 1</option>
+                <option value="E1 Semester 2">E1 Semester 2</option>
+                <option value="E2 Semester 1">E2 Semester 1</option>
+                <option value="E2 Semester 2">E2 Semester 2</option>
+                <option value="E3 Semester 1">E3 Semester 1</option>
+                <option value="E4 Semester 2">E4 Semester 2</option>
+            </select>
+
+            <button class="fetch-btn" onclick="navigateToContent()">Get Content ➔</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = function() {
+        const name = localStorage.getItem("rgukt_user");
+        if (!name) {
+            window.location.href = "index.html";
+        } else {
+            document.getElementById('user-name').innerText = name;
+        }
+        
+        // Dynamic Greeting
+        const hour = new Date().getHours();
+        let greeting = "Good Evening,";
+        if (hour < 12) greeting = "Good Morning,";
+        else if (hour < 17) greeting = "Good Afternoon,";
+        document.getElementById('greet').innerText = greeting;
+    }
+
+    function logout() {
+        if(confirm("Exit RGUKT Hub?")) {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+    }
+
+    function navigateToContent() {
+        const branch = document.getElementById('branch').value;
+        const sem = document.getElementById('sem').value;
+        
+        // Show Loading UI
+        document.getElementById('loader').style.display = 'flex';
+
+        // Brief delay for the "Premium App" feel
+        setTimeout(() => {
+            window.location.href = `resources.html?branch=${encodeURIComponent(branch)}&sem=${encodeURIComponent(sem)}`;
+        }, 1200);
+    }
+</script>
+
+</body>
+</html>
