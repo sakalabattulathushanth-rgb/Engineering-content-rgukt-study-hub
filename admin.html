@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Command Center</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+
+        :root {
+            --primary: #4e73df;
+            --bg: #f4f7fe;
+            --card: #ffffff;
+            --text: #1e293b;
+            --accent: #22c55e;
+            --border: rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-mode {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: background 0.3s, color 0.3s, border 0.3s; }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .shell {
+            width: 100%;
+            max-width: 450px;
+            padding: 40px 20px;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, #22c55e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p { font-size: 13px; opacity: 0.7; margin: 5px 0 0; }
+
+        /* Metric Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-card h4 { margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #888; }
+        .stat-card .value { font-size: 28px; font-weight: 800; color: var(--primary); margin-top: 5px; }
+
+        /* Table Section */
+        .log-section {
+            background: var(--card);
+            border-radius: 30px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .log-section h3 { margin: 0 0 20px; font-size: 16px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            font-size: 11px;
+            color: #888;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 15px 0;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .status-dot {
+            height: 8px;
+            width: 8px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        /* Footer Buttons */
+        .action-btns {
+            margin-top: 25px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .btn-refresh { background: var(--primary); color: white; }
+        .btn-back { background: transparent; color: var(--text); border: 1px solid var(--border); }
+
+        /* Floating Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 55px;
+            height: 55px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="shell">
+        <div class="header">
+            <h1>Admin Panel</h1>
+            <p>App Performance & Usage Logs</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h4>Total Users</h4>
+                <div class="value" id="totalUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Site Opens</h4>
+                <div class="value" id="totalVisits">0</div>
+            </div>
+        </div>
+
+        <div class="log-section">
+            <h3>Usage History</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>USER</th>
+                        <th>VISITS</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable">
+                    </tbody>
+            </table>
+
+            <div class="action-btns">
+                <button class="btn btn-refresh" onclick="location.reload()">Refresh Data</button>
+                <button class="btn btn-back" onclick="window.location.href='index.html'">Exit to App</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="theme-toggle" onclick="toggleTheme()" id="tBtn">🌙</div>
+
+    <script>
+        // 1. Theme Logic
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('tBtn').innerText = isDark ? '☀️' : '🌙';
+        }
+
+        // 2. Load Data and Theme on start
+        window.onload = () => {
+            // Load Theme
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('tBtn').innerText = '☀️';
+            }
+
+            // Load User Data
+            const name = localStorage.getItem('rgukt_user') || "Guest";
+            const visits = localStorage.getItem('visit_count') || 0;
+
+            document.getElementById('totalUsers').innerText = name !== "Guest" ? "1" : "0";
+            document.getElementById('totalVisits').innerText = visits;
+
+            document.getElementById('dataTable').innerHTML = `
+                <tr>
+                    <td><b>${name}</b></td>
+                    <td>${visits}</td>
+                    <td><span class="status-dot"></span> Active</td>
+                </tr>
+            `;
+        };
+        
+        
+            
+const firebaseConfig = {
+  apiKey: "AIzaSyAyWYYNzsSKv3r-9cdVeAtt-ULtFzsbXA8",
+  authDomain: "rgukt-hub-cf86c.firebaseapp.com",
+  databaseURL: "https://rgukt-hub-cf86c-default-rtdb.firebaseio.com", // ADDED THIS
+  projectId: "rgukt-hub-cf86c",
+  storageBucket: "rgukt-hub-cf86c.firebasestorage.app",
+  messagingSenderId: "128924214756",
+  appId: "1:128924214756:web:06ba08da5b2b064e0ed3f1"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+
+    </script>
+
+</body>
+</html>
