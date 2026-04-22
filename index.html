@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RGUKT Hub | Welcome</title>
+    <style>
+        :root { --primary: #4e73df; --accent: #22c55e; --glass: rgba(255, 255, 255, 0.9); }
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { margin: 0; padding: 0; height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradientBG 15s ease infinite; overflow: hidden; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .login-card { background: var(--glass); backdrop-filter: blur(10px); width: 90%; max-width: 400px; padding: 40px; border-radius: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); text-align: center; border: 1px solid rgba(255, 255, 255, 0.3); animation: slideUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        .logo-area { font-size: 80px; margin-bottom: 20px; animation: float 4s ease-in-out infinite; display: inline-block; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        h1 { font-size: 28px; margin: 0; background: linear-gradient(to right, #4e73df, #23a6d5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        p { color: #555; font-size: 14px; margin: 10px 0 30px; }
+        input { width: 100%; padding: 15px 20px; border-radius: 15px; border: 2px solid #e2e8f0; font-size: 16px; outline: none; transition: all 0.3s; background: rgba(255, 255, 255, 0.5); }
+        input:focus { border-color: var(--primary); background: white; }
+        .btn { background: var(--primary); color: white; border: none; width: 100%; padding: 16px; border-radius: 15px; font-size: 18px; font-weight: 700; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 15px -3px rgba(78, 115, 223, 0.4); margin-top: 20px; }
+        .preview { display: flex; justify-content: space-between; margin-top: 30px; opacity: 0.7; }
+        .preview-item { font-size: 11px; font-weight: 600; color: #444; }
+        .preview-item div { font-size: 20px; }
+        .dev-footer { margin-top: 30px; font-size: 10px; opacity: 0.6; letter-spacing: 1px; line-height: 1.5; text-transform: uppercase; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo-area">🎓</div>
+        <h1>RGUKT HUB</h1>
+        <p>Premium Engineering Resources</p>
+        <input type="text" id="username" placeholder="Enter your full name">
+        <button class="btn" onclick="handleLogin()">Start Learning ➔</button>
+        <div class="preview">
+            <div class="preview-item"><div>📚</div>Notes</div>
+            <div class="preview-item"><div>📄</div>Papers</div>
+            <div class="preview-item"><div>🎥</div>Videos</div>
+        </div>
+        <div class="dev-footer">Developed by <b>Thushanth</b><br>RGUKTian | 2024 Batch</div>
+    </div>
+    <script>
+        function handleLogin() {
+            const name = document.getElementById('username').value;
+            if (name.trim().length < 3) { alert("Please enter a valid name."); return; }
+            localStorage.setItem("rgukt_user", name);
+            window.location.href = "dashboard.html";
+        }
+        window.onload = () => { if(localStorage.getItem("rgukt_user")) window.location.href = "dashboard.html"; }
+    </script>
+</body>
+</html>

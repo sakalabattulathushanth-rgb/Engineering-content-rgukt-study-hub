@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <style>
+        :root { --primary: #4e73df; --bg: #f4f7fe; --card: #ffffff; }
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { margin: 0; background: var(--bg); display: flex; justify-content: center; padding: 20px; }
+        .shell { width: 100%; max-width: 450px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 24px; font-weight: 800; color: var(--primary); margin: 0; }
+        .log-section { background: var(--card); border-radius: 25px; padding: 25px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .query-card { background: #f8fafc; padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 5px solid var(--primary); }
+        .query-user { font-size: 11px; font-weight: 800; color: var(--primary); }
+        .dev-footer { margin-top: 30px; text-align: center; font-size: 10px; opacity: 0.5; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div class="header"><h1>Admin Command Center</h1></div>
+        <div class="log-section">
+            <h3>Student Queries</h3>
+            <div id="queryContainer"><p style="text-align:center; opacity:0.5">Connecting to cloud...</p></div>
+        </div>
+        <div class="dev-footer">Developed by <b>Thushanth</b><br>RGUKTian | 2024 Batch</div>
+    </div>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAyWYYNzsSKv3r-9cdVeAtt-ULtFzsbXA8",
+            authDomain: "rgukt-hub-cf86c.firebaseapp.com",
+            databaseURL: "https://rgukt-hub-cf86c-default-rtdb.firebaseio.com",
+            projectId: "rgukt-hub-cf86c",
+            storageBucket: "rgukt-hub-cf86c.firebasestorage.app",
+            messagingSenderId: "128924214756",
+            appId: "1:128924214756:web:06ba08da5b2b064e0ed3f1"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        db.ref('queries').on('value', (snap) => {
+            const container = document.getElementById('queryContainer');
+            const data = snap.val();
+            container.innerHTML = "";
+            if(!data) { container.innerHTML = "No queries yet."; return; }
+            Object.values(data).reverse().forEach(q => {
+                container.innerHTML += `<div class="query-card"><span class="query-user">${q.user} • ${q.timestamp}</span><p style="margin:5px 0 0; font-size:13px">${q.text}</p></div>`;
+            });
+        });
+    </script>
+</body>
+</html>

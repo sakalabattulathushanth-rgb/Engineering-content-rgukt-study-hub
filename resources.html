@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RGUKT Library</title>
+    <style>
+        :root { --primary: #4e73df; --bg: #f4f7fe; --text: #1e293b; }
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { margin: 0; background: var(--bg); display: flex; justify-content: center; }
+        .app-shell { width: 100%; max-width: 420px; min-height: 100vh; background: var(--bg); padding-bottom: 20px; }
+        .header { background: linear-gradient(135deg, #4e73df 0%, #22c55e 100%); padding: 40px 25px 30px; border-bottom-left-radius: 35px; border-bottom-right-radius: 35px; color: white; }
+        .back-btn { background: rgba(255, 255, 255, 0.2); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 12px; cursor: pointer; margin-bottom: 15px; }
+        .subject-container { padding: 25px 20px; }
+        .subject-wrapper { margin-bottom: 16px; border-radius: 20px; background: white; border: 1px solid #eef2f6; overflow: hidden; }
+        .subject-btn { width: 100%; padding: 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .subject-btn h3 { margin: 0; font-size: 14px; font-weight: 600; }
+        .content-drawer { display: none; background: #fafbff; padding: 10px; border-top: 1px solid #f1f5f9; text-align: center; font-size: 12px; opacity: 0.6; }
+        .dev-footer { margin-top: auto; padding: 20px; text-align: center; font-size: 10px; opacity: 0.5; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+<div class="app-shell">
+    <div class="header">
+        <div class="back-btn" onclick="history.back()">←</div>
+        <h2 id="b-title" style="margin:0">Loading...</h2>
+        <p id="s-title" style="margin:5px 0 0; opacity:0.8; font-size:13px">Academic Resources</p>
+    </div>
+    <div class="subject-container"></div>
+    <div class="dev-footer">Developed by <b>Thushanth</b><br>RGUKTian | 2024 Batch</div>
+</div>
+
+<script>
+    const academicData = {
+        "E2": {
+            "CSE": { "Sem-1": ["Discrete Mathematics", "Data Structures", "Digital Electronics"], "Sem-2": ["Java", "Operating Systems", "DAA"] }
+        }
+        // We will add E1, E3, E4 and other branches here later
+    };
+
+    window.onload = function() {
+        const p = new URLSearchParams(window.location.search);
+        const y = p.get('year'), b = p.get('branch'), s = p.get('sem');
+        document.getElementById('b-title').innerText = `${y} - ${b}`;
+        document.getElementById('s-title').innerText = s;
+
+        const container = document.querySelector('.subject-container');
+        if (academicData[y] && academicData[y][b] && academicData[y][b][s]) {
+            academicData[y][b][s].forEach(sub => {
+                container.innerHTML += `
+                    <div class="subject-wrapper">
+                        <div class="subject-btn" onclick="toggleSub(this)"><h3>${sub}</h3><span>▼</span></div>
+                        <div class="content-drawer">PDFs and Notes for ${sub} coming soon!</div>
+                    </div>`;
+            });
+        } else {
+            container.innerHTML = "<div style='text-align:center; padding:40px; opacity:0.5'>📂 Subjects for this selection will be added soon!</div>";
+        }
+    };
+
+    function toggleSub(e) {
+        const d = e.parentElement.querySelector('.content-drawer');
+        d.style.display = d.style.display === 'block' ? 'none' : 'block';
+    }
+</script>
+</body>
+</html>
